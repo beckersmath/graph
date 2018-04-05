@@ -60,8 +60,8 @@ The library has a 2 Graph Classes:
         Graph graph = Graph.makeGraph();
         DirectedGraph digraph = DirectedGraph.makeGraph();
         GraphParser gp = GraphParser.makeGraphParser();
-        graph = gp.loadGraph(graph, "path/to/graph-data");
-        digraph = gp.loadGraph(digraph, "path/to/graph-data");
+        graph = (Graph) gp.loadGraph(graph, "path/to/graph-data");
+        digraph = (DirectedGraph) gp.loadGraph(digraph, "path/to/graph-data");
     }
 
 Algorithms contains many algorithms to run on the graph:
