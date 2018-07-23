@@ -188,7 +188,7 @@ public class Algorithm {
 		return (topologicalSort((DirectedGraph) graph)==null) ? false : true;
 	}
 
-	/** check if un-directed graph is acyclic and connected */
+	/* check if un-directed graph is acyclic and connected */
 	public static boolean tree(Graphs graph) {
 
 		HashSet<Node> visited = new HashSet<Node>(graph.size());

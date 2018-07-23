@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
-* The Graph Parser Class is instantiated to reader a file contianing preivous
-* graph information. This class must be instantiated and has one public method
-* {@link loadGraph()}. 
-* @author Tyler Townsend
-* @version 0.1
-* @since 2018-04-05
-*/
+ * The Graph Parser Class is instantiated to reader a file contianing preivous
+ * graph information. This class must be instantiated and has one public method
+ *
+ * @author Tyler Townsend
+ * @version 0.1
+ * @since 2018-04-05
+ */
 
 public class GraphParser {
 

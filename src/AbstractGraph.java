@@ -94,7 +94,7 @@ public abstract class AbstractGraph implements Graphs {
 
 
 	/**
- 	 * Returns a {@LinkedList} of edges adjacent to Node v.
+ 	 * Returns a {@code LinkedList} of edges adjacent to Node v.
 	 */
 	public LinkedList<Edge> edges(Node v) {
 		return adjList.get(v);
