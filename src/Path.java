@@ -11,23 +11,23 @@ import java.util.List;
 
 class Path {
 	private static double distance;
-	private static Node _source;
-	private static List<Node> nodes;
+	private static Integer _source;
+	private static List<Integer> nodes;
 
-	private Path(Node source) {
-		nodes = new LinkedList<Node>();
+	private Path(Integer source) {
+		nodes = new LinkedList<Integer>();
 		_source = source;
 		distance = 0.0;
 	}
 
-	protected static Path makePath(Node source) {
+	protected static Path makePath(Integer source) {
 		return new Path(source);
 	}
 
-	public List<Node> get() {
+	public List<Integer> get() {
 		return nodes;
 	}
-	public Node get(int index) {
+	public Integer get(int index) {
 		return this.get().get(index);
 	}
 
@@ -39,7 +39,7 @@ class Path {
 		return this.get().size();
 	}
 
-	protected void insert(Node source) {
+	protected void insert(Integer source) {
 		this.get().add(source);
 	}
 

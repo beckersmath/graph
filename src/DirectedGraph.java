@@ -28,7 +28,7 @@ public class DirectedGraph extends AbstractGraph implements Graphs {
 	}
 
 	@Override
-	public void addEdge(Node u, Node v) {
+	public void addEdge(int u, int v) {
 		this.addNode(u);
 		this.addNode(v);
 		if (this.containsEdge(u,v)) return;
@@ -37,7 +37,7 @@ public class DirectedGraph extends AbstractGraph implements Graphs {
 	}
 
 	@Override
-	public void addEdge(Node u, Node v, double weight) {
+	public void addEdge(int u, int v, double weight) {
 		this.addNode(u);
 		this.addNode(v);
 		if (this.containsEdge(u,v)) return;
@@ -46,7 +46,7 @@ public class DirectedGraph extends AbstractGraph implements Graphs {
 	}
 
 	@Override
-	public void deleteEdge(Node u, Node v) {
+	public void deleteEdge(int u, int v) {
 		if (!this.containsEdge(u,v)) return;
 
 		int index = 0;

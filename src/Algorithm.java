@@ -27,21 +27,20 @@ public class Algorithm {
 
 	// Make a Tree class that inherits from Graph
 	public static Set<Edge> bfs(Graphs graph, int root) {
-		return bfs(graph,
-		Node.makeNode(root), new HashSet<Node>(graph.size()));
+		return bfs(graph, root, new HashSet<Integer>(graph.size()));
 	}
 
-	private static Set<Edge> bfs (Graphs graph, Node root, HashSet<Node> visited) {
-		Queue<Node> q = new ArrayDeque<Node>();
+	private static Set<Edge> bfs (Graphs graph, int root, HashSet<Integer> visited) {
+		Queue<Integer> q = new ArrayDeque<Integer>();
 		Set<Edge> t = new HashSet<Edge>();
 		q.add(root);
 		visited.add(root);
 		while(!q.isEmpty()) {
 
 			// process node
-			Node u = q.poll();
+			int u = q.poll();
 			for (Edge e : graph.edges(u)) {
-				Node v = e.target();
+				int v = e.target();
 				if (!visited.contains(v)) {
 					visited.add(v);
 					q.add(v);
@@ -52,13 +51,13 @@ public class Algorithm {
 		return t;
 	}
 
-	public static List<Node> dfs(Graphs graph, int root) {
-		List<Node> t = new LinkedList<Node>();
-		dfs(graph, Node.makeNode(root), new HashSet<Node>(graph.size()), t);
+	public static List<Integer> dfs(Graphs graph, int root) {
+		List<Integer> t = new LinkedList<Integer>();
+		dfs(graph, root, new HashSet<Integer>(graph.size()), t);
 		return t;
 	}
 
-	private static void dfs(Graphs graph, Node root, HashSet<Node> visited, List<Node> t) {
+	private static void dfs(Graphs graph, int root, HashSet<Integer> visited, List<Integer> t) {
 		t.add(root);
 		visited.add(root);
 		for (Edge e : graph.edges(root)) {
@@ -68,19 +67,19 @@ public class Algorithm {
 
 	public static boolean bipartite(Graphs graph) {
 
-		HashSet<Node> red = new HashSet<Node>();
-		HashSet<Node> visited = new HashSet<Node>(graph.size());
+		HashSet<Integer> red = new HashSet<Integer>();
+		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
 
-		Queue<Node> q = new ArrayDeque<Node>();
-		Node start = randomNode(graph);
+		Queue<Integer> q = new ArrayDeque<Integer>();
+		int start = randomNode(graph);
 		visited.add(start);
 		// put start in red set
 		red.add(start);
 		q.add(start);
 		while (!q.isEmpty()) {
-			Node u = q.remove();
+			int u = q.remove();
 			for (Edge e : graph.edges(u)) {
-				Node v = e.target();
+				int v = e.target();
 				// The node is not in a layer so color it accordingly
 				if (!visited.contains(v)) {
 					visited.add(v);
@@ -101,17 +100,17 @@ public class Algorithm {
 	*
 	*/
 	public static int numberOfComponets (Graphs graph) {
-		ArrayList<List<Node>> comp = new ArrayList<List<Node>>();
+		ArrayList<List<Integer>> comp = new ArrayList<List<Integer>>();
 		comp = connectedComponents(graph);
 		return comp.size();
 	}
 
-	public static ArrayList<List<Node>> connectedComponents(Graphs graph) {
-		HashSet<Node> visited = new HashSet<Node>(graph.size());
-		ArrayList<List<Node>> cc = new ArrayList<List<Node>>();
+	public static ArrayList<List<Integer>> connectedComponents(Graphs graph) {
+		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
+		ArrayList<List<Integer>> cc = new ArrayList<List<Integer>>();
 
-		List<Node> component = new LinkedList<>();
-		for (Node u : graph.nodes()) {
+		List<Integer> component = new LinkedList<>();
+		for (Integer u : graph.nodes()) {
 			if (!visited.contains(u)) {
 				dfs (graph, u, visited, component);
 				cc.add(component);
@@ -131,10 +130,10 @@ public class Algorithm {
 		return stronglyConnected(graph, randomNode(graph));
 	}
 
-	private static boolean stronglyConnected(Graphs graph, Node u) {
+	private static boolean stronglyConnected(Graphs graph, int u) {
 		Graphs graphRev = reverseGraph(graph);
-		HashSet<Node> visited = new HashSet<Node>(graph.size());
-		HashSet<Node> visitedRev = new HashSet<Node>(graph.size());
+		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
+		HashSet<Integer> visitedRev = new HashSet<Integer>(graph.size());
 		bfs(graph, u, visited);
 		bfs(graphRev, u, visitedRev);
 		if (visited == null || visitedRev == null) return false;
@@ -142,15 +141,15 @@ public class Algorithm {
 		else return visited.containsAll(visitedRev);
 	}
 
-	public static List<Node> topologicalSort(DirectedGraph graph) {
-		HashMap<Node, Integer> incoming = new HashMap<>(graph.size());
-		List<Node> order = new LinkedList<Node>();
+	public static List<Integer> topologicalSort(DirectedGraph graph) {
+		HashMap<Integer, Integer> incoming = new HashMap<>(graph.size());
+		List<Integer> order = new LinkedList<Integer>();
 		int cnt = 0;
-		for (Node u : graph.nodes()) {
+		for (Integer u : graph.nodes()) {
 			if (!incoming.containsKey(u))
 				incoming.put(u, 0);
 			for (Edge e : graph.edges(u)) {
-				Node v = e.target();
+				int v = e.target();
 				// incrementDegree(incoming, v);
 				if (!incoming.containsKey(v)) {
 					incoming.put(v, 1);
@@ -159,18 +158,18 @@ public class Algorithm {
 				}
 			}
 		}
-		Queue<Node> q = new ArrayDeque<Node>();
-		for (Node u : graph.nodes()) {
+		Queue<Integer> q = new ArrayDeque<Integer>();
+		for (Integer u : graph.nodes()) {
 			if (incoming.get(u)==0)
 				q.add(u);
 		}
 		while (!q.isEmpty()) {
-			Node u = q.poll();
+			int u = q.poll();
 			order.add(u);
 			++cnt;		
 			for (Edge e : graph.edges(u)) {
 				// decrement
-				Node v = e.target();
+				int v = e.target();
 				incoming.put(v, incoming.get(v)-1);
 				if (incoming.get(v) == 0) {
 					q.add(v);
@@ -191,10 +190,10 @@ public class Algorithm {
 	/* check if un-directed graph is acyclic and connected */
 	public static boolean tree(Graphs graph) {
 
-		HashSet<Node> visited = new HashSet<Node>(graph.size());
+		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
 		/** If the graph has a cycle */
 		if (graph.directed()==false) {
-			if (cyclic(randomNode(graph), (Graph) graph, visited, Node.makeNode(-1))) {
+			if (cyclic(randomNode(graph), (Graph) graph, visited, -1)) {
 				return false;
 			}
 		} else {
@@ -204,7 +203,7 @@ public class Algorithm {
 		}
 
 		/** If the graph is disconnected */
-		for (Node u : graph.nodes()) {
+		for (Integer u : graph.nodes()) {
 			if (!visited.contains(u)) {
 				System.out.println("disconnected");
 				return false;
@@ -213,11 +212,11 @@ public class Algorithm {
 		return true;
 	}
 
-	private static boolean cyclic(Node u, Graph graph, 
-									HashSet<Node> visited, Node parent) {
+	private static boolean cyclic(Integer u, Graph graph, 
+									HashSet<Integer> visited, int parent) {
 		visited.add(u);
 		for (Edge e : graph.edges(u)) {
-			Node v = e.target();
+			Integer v = e.target();
 			if (!visited.contains(v)) {
 				if (cyclic(v, graph, visited, u))
 					return true;
@@ -229,22 +228,22 @@ public class Algorithm {
 	}
 
 	public static boolean cyclic(DirectedGraph graph) {
-		HashSet<Node> visited = new HashSet<Node>(graph.size());
-		HashSet<Node> recStack = new HashSet<Node>(graph.size());
-		for (Node u : graph.nodes()) {
+		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
+		HashSet<Integer> recStack = new HashSet<Integer>(graph.size());
+		for (Integer u : graph.nodes()) {
 			if (cyclic(graph, randomNode(graph), visited, recStack))
 				return true;
 		}
 		return false;
 	}
 
-	private static boolean cyclic (DirectedGraph graph, Node u, 
-					HashSet<Node> visited, HashSet<Node> recStack) {
+	private static boolean cyclic (DirectedGraph graph, int u, 
+					HashSet<Integer> visited, HashSet<Integer> recStack) {
 		if (!visited.contains(u)) {
 			visited.add(u);
 			recStack.add(u);
 			for (Edge e : graph.edges(u)) {
-				Node v = e.target();
+				int v = e.target();
 				if (!visited.contains(v) && cyclic(graph, v, visited, recStack))
 					return true;
 				else if (recStack.contains(v))
@@ -259,7 +258,7 @@ public class Algorithm {
 	// Can implement reverse edge method in in
 	public static Graphs reverseGraph(Graphs graph) {
 		Graphs reversed = Algorithm.graphType(graph);
-		for (Node u : graph.nodes()) {
+		for (Integer u : graph.nodes()) {
 			for (Edge e : graph.edges(u)) {
 				Edge eRev = e.reverseEdge();
 				reversed.addEdge(eRev);
@@ -269,19 +268,15 @@ public class Algorithm {
 	}
 
 	public static boolean containsPath(Graphs graph, int s, int t) {
-		return containsPath(graph, Node.makeNode(s), Node.makeNode(t));
-	}
 
-	private static boolean containsPath(Graphs graph, Node s, Node t) {
-
-		HashSet<Node> visited = new HashSet<Node>(graph.size());
-		Queue<Node> q = new ArrayDeque<Node>();
+		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
+		Queue<Integer> q = new ArrayDeque<Integer>();
 		q.add(s);
 		visited.add(s);
 		while(!q.isEmpty()) {
-			Node u = q.poll();
+			Integer u = q.poll();
 			for (Edge e : graph.edges(u)) {
-				Node v = e.target();
+				Integer v = e.target();
 				if (v.equals(t)) return true;
 				if (!visited.contains(v)) {
 					visited.add(v);
@@ -295,21 +290,21 @@ public class Algorithm {
 	public static Path getPath(Graphs graph, int s, int t) {
 		if (!containsPath(graph, s, t)) return null;
 		if (graph.weighted()==true) return getWeightedPath(graph, s, t);
-		return getPath(graph, Node.makeNode(s), Node.makeNode(t));
+		return getPathUnweighted(graph, s, t);
 	}	
 
-	private static Path getPath(Graphs graph, Node s, Node t) {
+	private static Path getPathUnweighted(Graphs graph, int s, int t) {
 		Path path = Path.makePath(s);
-		HashSet<Node> visited = new HashSet<Node>(graph.size());
-		HashMap<Node, Edge> parent = new HashMap<Node, Edge>(graph.size());
-		Queue<Node> q = new ArrayDeque<Node>();
+		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
+		HashMap<Integer, Edge> parent = new HashMap<Integer, Edge>(graph.size());
+		Queue<Integer> q = new ArrayDeque<Integer>();
 		q.add(s);
 		visited.add(s);
 		boolean found = false;
 		while(!q.isEmpty() && !found) {
-			Node u = q.poll();
+			Integer u = q.poll();
 			for (Edge e : graph.edges(u)) {
-				Node v = e.target();
+				Integer v = e.target();
 				if (v.equals(t)) found = true;
 				if (!visited.contains(v)) {
 					visited.add(v);
@@ -322,17 +317,13 @@ public class Algorithm {
 	}
 
 	private static Path getWeightedPath(Graphs graph, int s, int t) {
-		return getWeightedPath(graph, Node.makeNode(s), Node.makeNode(t));
-	}
-
-	private static Path getWeightedPath(Graphs graph, Node s, Node t) {
-		HashMap<Node, Double> dist = new HashMap<Node, Double>(graph.size());
-		HashSet<Node> visited = new HashSet<Node>(graph.size());
+		HashMap<Integer, Double> dist = new HashMap<Integer, Double>(graph.size());
+		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
 		Path path = Path.makePath(s);
-		HashMap<Node, Edge> parent = new HashMap<Node, Edge>(graph.size());
+		HashMap<Integer, Edge> parent = new HashMap<Integer, Edge>(graph.size());
 		PriorityQueue<Edge> minheap = new PriorityQueue<Edge>();
  	
- 		for (Node u : graph.nodes()) {
+ 		for (Integer u : graph.nodes()) {
  			dist.put(u, 1e9);
  		}
 
@@ -342,7 +333,7 @@ public class Algorithm {
 		boolean found = false;
 		while (!minheap.isEmpty() && visitedVertices < graph.size() && !found) {
 			Edge e = minheap.remove();
-			Node v = e.target();
+			Integer v = e.target();
 			if (visited.contains(v)) continue;
 			visited.add(v);
 			visitedVertices++;
@@ -358,8 +349,8 @@ public class Algorithm {
 		return constructPath(path, parent, s, t);
 	}
 
-	private static Path constructPath(Path path, HashMap<Node, Edge> parent, Node s, Node t) {
-		Node curr = t;
+	private static Path constructPath(Path path, HashMap<Integer, Edge> parent, int s, int t) {
+		int curr = t;
 		while (!parent.get(curr).source().equals(s)) {
 			path.add(parent.get(curr));
 			curr = parent.get(curr).source();
@@ -369,18 +360,14 @@ public class Algorithm {
 		return path;
 	}
 
-	public static Map<Node, Double> getDistances(Graphs graph, int source) {
-		return getDistances(graph, Node.makeNode(source));
-	}
+	private static Map<Integer, Double> getDistances(Graphs graph, int source) {
 
-	private static Map<Node, Double> getDistances(Graphs graph, Node source) {
-
-		HashMap<Node, Double> dist = new HashMap<Node, Double>(graph.size());
-		HashSet<Node> visited = new HashSet<Node>(graph.size());
-		HashMap<Node, Node> parent = new HashMap<Node, Node>(graph.size());
+		HashMap<Integer, Double> dist = new HashMap<Integer, Double>(graph.size());
+		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
+		HashMap<Integer, Integer> parent = new HashMap<Integer, Integer>(graph.size());
 		PriorityQueue<Edge> minheap = new PriorityQueue<Edge>();
  	
- 		for (Node u : graph.nodes()) {
+ 		for (Integer u : graph.nodes()) {
  			dist.put(u, 1e9);
  		}
 		dist.put(source, 0.0);
@@ -389,7 +376,7 @@ public class Algorithm {
 		minheap.add(Edge.makeEdge(source, source, 0));
 		while (!minheap.isEmpty() && visitedVertices < graph.size()) {
 			Edge e = minheap.remove();
-			Node v = e.target();
+			int v = e.target();
 			if (visited.contains(v)) continue;
 			visited.add(v);
 			visitedVertices++;
@@ -405,9 +392,9 @@ public class Algorithm {
 		return dist;
 	}
 
-	private static void printMinimumDistance(Node source, HashMap<Node, Double> dist) {
-		for (Node u : dist.keySet()) {
-			System.out.println("    Minimum Distance to "+ (char)(u.value().longValue() + 'a') + " : " + dist.get(u));
+	private static void printMinimumDistance(int source, HashMap<Integer, Double> dist) {
+		for (Integer u : dist.keySet()) {
+			System.out.println("    Minimum Distance to "+ (char)(u.longValue() + 'a') + " : " + dist.get(u));
 		}
 	}
 
@@ -417,8 +404,8 @@ public class Algorithm {
 		if (Algorithm.numberOfComponets(graph)!=1) return null;
 		Set<Edge> mst = new HashSet<Edge>(); 
 		int n = graph.size();
-		HashSet<Node> visited = new HashSet<Node>(graph.size());
-		Node u = Algorithm.randomNode(graph);
+		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
+		int u = Algorithm.randomNode(graph);
 		visited.add(u);
 
 		// Add all of v's edge into the priority queue.
@@ -467,7 +454,7 @@ public class Algorithm {
 	}
 
 	/** Returns a random node from the graph in O(1) time */
-	private static Node randomNode(Graphs graph) {
+	private static Integer randomNode(Graphs graph) {
 		return graph.nodes().iterator().next();
 	}
 
@@ -478,7 +465,7 @@ public class Algorithm {
 			return;
 		}
  
-		for (Node u : graph.nodes()) {
+		for (Integer u : graph.nodes()) {
 			System.out.print(u+": ");
 			for (Edge e : graph.edges(u)) {
 				System.out.print(e.target()+" ");
@@ -487,19 +474,19 @@ public class Algorithm {
 		}
 	}
 
-	public static void printMap(Map<Node, Double> distances) {
-		for (Node u : distances.keySet()) {
+	public static void printMap(Map<Integer, Double> distances) {
+		for (Integer u : distances.keySet()) {
 			System.out.print(u +": " +distances.get(u));
 		}
 	}
 
 	public static void printPath(Path p) {
-		for (Node u : p.get()) {
+		for (Integer u : p.get()) {
 			System.out.print(u + (u.equals(p.get(p.size()-1)) ? "\n" : " "));
 		}
 	}
 
-	public static void printList(List<Node> list) {
+	public static void printList(List<Integer> list) {
 		for (int i=0; i<list.size(); i++)
 			System.out.print(list.get(i) + (i==list.size()-1 ? "\n" : "->"));
 	}

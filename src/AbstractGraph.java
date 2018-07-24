@@ -16,7 +16,8 @@ import java.util.LinkedList;
 public abstract class AbstractGraph implements Graphs {
 	// TODO The HashMap Will Store the node number but a second data structure
 	// will store the address to the meta data
-	private HashMap<Node, LinkedList<Edge>> adjList;
+	private HashMap<Integer, LinkedList<Edge>> adjList;
+	private HashMap<Integer, Node> nodeData;
 	private Boolean directed;
 	private Boolean weighted;
 	private int numberOfEdges;
@@ -25,7 +26,7 @@ public abstract class AbstractGraph implements Graphs {
 	 * This is the constructor for instantiating the graph data structure. 
 	 */
 	protected AbstractGraph() {
-		adjList = new HashMap<Node, LinkedList<Edge>>();
+		adjList = new HashMap<Integer, LinkedList<Edge>>();
 	}
 
 	/**
@@ -35,7 +36,7 @@ public abstract class AbstractGraph implements Graphs {
 	 * @param numberOfNodes the number of vertices the graph contains.
 	 */
 	protected AbstractGraph(int numberOfNodes) {
-		adjList = new HashMap<Node, LinkedList<Edge>>(numberOfNodes);
+		adjList = new HashMap<Integer, LinkedList<Edge>>(numberOfNodes);
 	}
 
 	/** 
@@ -88,7 +89,7 @@ public abstract class AbstractGraph implements Graphs {
 	 * 
 	 * @return a set of nodes
 	 */
-	public Set<Node> nodes() {
+	public Set<Integer> nodes() {
 		return adjList.keySet();
 	}
 
@@ -96,7 +97,7 @@ public abstract class AbstractGraph implements Graphs {
 	/**
  	 * Returns a {@code LinkedList} of edges adjacent to Node v.
 	 */
-	public LinkedList<Edge> edges(Node v) {
+	public LinkedList<Edge> edges(int v) {
 		return adjList.get(v);
 	}
 
@@ -128,34 +129,12 @@ public abstract class AbstractGraph implements Graphs {
 		numberOfEdges--;
 	}
 
-
-	/**
-	 * Inserts node u.
-	 */
-	public void addNode(int u) {
-		this.addNode(Node.makeNode(u));
-	}
-
 	/**
 	 * Inserts Node u
 	 */
-	public void addNode(Node u) {
+	public void addNode(int u) {
 		if (!this.containsNode(u))
 			adjList.put(u, new LinkedList<Edge>());
-	}
-
-	/**
-	 * Inserts an unweighted edge between node u and node v. 
-	 */
-	public void addEdge(int u, int v) {
-		this.addEdge(Node.makeNode(u), Node.makeNode(v));
-	}
-
-	/**
-	 * Inserts an edge between node u and v with weight.
-	 */
-	public void addEdge(int u, int v, double weight) {
-		addEdge(Node.makeNode(u), Node.makeNode(v), weight);
 	}
 
 	/**
@@ -166,16 +145,9 @@ public abstract class AbstractGraph implements Graphs {
 	}
 
 	/**
-	 * Removes node u.
-	 */
-	public void deleteNode(int u) {
-		this.deleteNode(Node.makeNode(u));
-	}
-
-	/**
 	 * Removes Node u
 	 */
-	public void deleteNode(Node u) {
+	public void deleteNode(int u) {
 		for (Edge e : this.edges(u) ) {
 			this.deleteEdge(u, e.target());
 			decrementEdges();
@@ -183,17 +155,10 @@ public abstract class AbstractGraph implements Graphs {
 	}
 
 	/**
-	 * Removes this edge between u and v.
-	 */
-	public void deleteEdge(int u, int v) {
-		this.deleteEdge(Node.makeNode(u), Node.makeNode(v));
-	}
-
-	/**
 	 * Returns a boolean stating if this graph contains Node v.
 	 * True if Node v is in this graph and false otherwise.
 	 */
-	public boolean containsNode(Node v) {
+	public boolean containsNode(int v) {
 		return adjList.containsKey(v);
 	}
 
@@ -208,7 +173,7 @@ public abstract class AbstractGraph implements Graphs {
 	 * 
 	 * <p> Returns false if this graph does not contain both node u and node v.
 	 */
-	public boolean containsEdge(Node u, Node v) {
+	public boolean containsEdge(int u, int v) {
 		if (!this.containsNode(u)||!this.containsNode(v)) return false;
 		if (getEdge(u,v) == null) return false;
 		return true;
@@ -220,7 +185,7 @@ public abstract class AbstractGraph implements Graphs {
 	 * 
 	 * @return e is the edge between Node u and Node v
 	 */
-	public Edge getEdge(Node u, Node v) {
+	public Edge getEdge(int u, int v) {
 		for (Edge e : this.edges(u)) {
 			if (e.target().equals(v))
 				return e;
@@ -231,7 +196,7 @@ public abstract class AbstractGraph implements Graphs {
 	/*
 	 * Abstract methods, require further implementation 
 	 */
-	abstract public void addEdge(Node u, Node v);
-	abstract public void addEdge(Node u, Node v, double weight);
-	abstract public void deleteEdge(Node u, Node v);
+	abstract public void addEdge(int u, int v);
+	abstract public void addEdge(int u, int v, double weight);
+	abstract public void deleteEdge(int u, int v);
 }

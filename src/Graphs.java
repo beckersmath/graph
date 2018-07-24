@@ -1,6 +1,8 @@
 import java.util.Set;
 import java.util.LinkedList;
 
+
+// TODO refactor all methods to use insert, remove, contains
 /**
 * The Graphs interface denots all the public methods that can be used within
 * the library. The library contians implementations of weighted/unwieghted 
@@ -13,22 +15,17 @@ import java.util.LinkedList;
 interface Graphs {
 	public Boolean directed();
 	public Boolean weighted();
-	public Set<Node> nodes();
-	public LinkedList<Edge> edges(Node v);
+	public Set<Integer> nodes();
+	public LinkedList<Edge> edges(int v);
 	public int size();
 	public int edgeTotal();
 	public void addNode(int u);
-	public void addNode(Node u);
 	public void addEdge(int u, int v);
 	public void addEdge(int u, int v, double weight);
-	public void addEdge(Node u, Node v);
-	public void addEdge(Node u, Node v, double weight);
 	public void addEdge(Edge e);
 	public void deleteNode(int u);
-	public void deleteNode(Node u);
 	public void deleteEdge(int u, int v);
-	public void deleteEdge(Node u, Node v);
-	public boolean containsNode(Node v);
-	public boolean containsEdge(Node u, Node v);
-	public Edge getEdge(Node u, Node v);
+	public boolean containsNode(int v);
+	public boolean containsEdge(int u, int v);
+	public Edge getEdge(int u, int v);
 }

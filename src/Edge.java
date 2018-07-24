@@ -8,26 +8,26 @@
 */
 
 class Edge implements Comparable<Edge> {
-	private Node u;
-	private Node v;
+	private Integer u;
+	private Integer v;
 	private double weight;
 
-	private Edge(Node u, Node v, double weight) {
+	private Edge(Integer u, Integer v, double weight) {
 		this(u,v);
 		this.weight = weight;
 	}
 
-	private Edge(Node u, Node v) {
+	private Edge(Integer u, Integer v) {
 		this.u = u;
 		this.v = v;
 		this.weight = 1.0;
 	}
 
-	protected static Edge makeEdge(Node u, Node v, double weight) {
+	protected static Edge makeEdge(Integer u, Integer v, double weight) {
 		return new Edge (u,v, weight);
 	}
 
-	protected static Edge makeEdge(Node u, Node v) {
+	protected static Edge makeEdge(Integer u, Integer v) {
 		return new Edge(u, v);
 	}
 
@@ -35,11 +35,11 @@ class Edge implements Comparable<Edge> {
 		return weight;
 	}
 
-	public Node target() {
+	public Integer target() {
 		return v;
 	}
 
-	public Node source() {
+	public Integer source() {
 		return u;
 	}
 

@@ -29,8 +29,12 @@ public class GraphParser {
 		return new GraphParser();
 	}
 
-	public Graphs loadGraph(Graphs graph, String filename) {
+	public Graphs loadTxt(Graphs graph, String filename) {
 		return parse(graph, filename);
+	}
+
+	public Graphs loadCsv(Graphs graph, String filename) {
+		return null;
 	}
 
 	private Graphs parse(Graphs graph, String filename) {
@@ -90,13 +94,13 @@ public class GraphParser {
 			case 2 : {
 				String [] edges = temp.split("\\s+");
 				graph = graphType(graph, false);
-				graph.addEdge( Node.makeNode(edges[0]), Node.makeNode(edges[1]));
+				graph.addEdge(Integer.parseInt(edges[0]), Integer.parseInt(edges[1]));
 				try {
 					int i = 0;
 					while((temp = br.readLine()) != null) {
 						edges = temp.split("\\s+");
 						// if (i % 1000==0) System.out.println("Line " + i);
-						graph.addEdge(Node.makeNode(edges[0]), Node.makeNode(edges[1]));
+						graph.addEdge(Integer.parseInt(edges[0]), Integer.parseInt(edges[1]));
 						i++;
 					}
 				} catch (IOException ex) {
@@ -108,11 +112,11 @@ public class GraphParser {
 			case 3 : {
 				String [] edges = temp.split("\\s+");
 				graph = graphType(graph, true);
-				graph.addEdge(Node.makeNode(edges[0]), Node.makeNode(edges[1]), Integer.parseInt(edges[2]));
+				graph.addEdge(Integer.parseInt(edges[0]), Integer.parseInt(edges[1]), Integer.parseInt(edges[2]));
 				try {
 					while((temp=br.readLine()) != null) {
 						edges = temp.split("\\s+");
-						graph.addEdge(Node.makeNode(edges[0]), Node.makeNode(edges[1]), Integer.parseInt(edges[2]));
+						graph.addEdge(Integer.parseInt(edges[0]), Integer.parseInt(edges[1]), Integer.parseInt(edges[2]));
 					}
 				} catch (IOException ex) {
 					ex.printStackTrace();
