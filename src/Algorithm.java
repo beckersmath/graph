@@ -141,10 +141,24 @@ public class Algorithm {
 		else return visited.containsAll(visitedRev);
 	}
 
+	/**
+	 * Returns a topological ordering on graph. Returned as a list of 
+	 * the Node numbers.
+	 * @param graph A DirectedGraph 
+	 * @return An ordered list of Nodes.
+	 */
 	public static List<Integer> topologicalSort(DirectedGraph graph) {
+
+		// Store incoming nodes
 		HashMap<Integer, Integer> incoming = new HashMap<>(graph.size());
+
+		// List of ordered nodes
 		List<Integer> order = new LinkedList<Integer>();
-		int cnt = 0;
+
+		// Count number of nodes
+		int count = 0;
+
+		// For each node in the graph
 		for (Integer u : graph.nodes()) {
 			if (!incoming.containsKey(u))
 				incoming.put(u, 0);
@@ -166,7 +180,7 @@ public class Algorithm {
 		while (!q.isEmpty()) {
 			int u = q.poll();
 			order.add(u);
-			++cnt;		
+			++count;		
 			for (Edge e : graph.edges(u)) {
 				// decrement
 				int v = e.target();
@@ -176,8 +190,8 @@ public class Algorithm {
 				}
 			}
 		}
-		if (cnt!=graph.size()) {
-			return null;
+		if (count!=graph.size()) {
+			return new LinkedList<Integer>();
 		}
 		return order;
 	}
