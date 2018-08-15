@@ -25,30 +25,44 @@ import java.util.Map;
 
 public class Algorithm {
 
-	// Make a Tree class that inherits from Graph
+	// TODO Make a Tree class that implements Graphs
+	/**
+	 * Performs breadth-first search on graph starting at root. Returns a Set of Edges
+	 * that form the bread-first search tree.
+	 * @param graph Graph data structure
+	 * @param root The starting vertix in graph
+	 * @return The Edges in the bread-first search tree
+	 */
 	public static Set<Edge> bfs(Graphs graph, int root) {
 		return bfs(graph, root, new HashSet<Integer>(graph.size()));
 	}
 
 	private static Set<Edge> bfs (Graphs graph, int root, HashSet<Integer> visited) {
+
+		// The set of edges that form the bfs tree
+		Set<Edge> tree = new HashSet<Edge>();
+
+		// Set up a queue of layers starting with the root 
 		Queue<Integer> q = new ArrayDeque<Integer>();
-		Set<Edge> t = new HashSet<Edge>();
 		q.add(root);
 		visited.add(root);
+
+		// traverse through all the layers and mark each visited node
 		while(!q.isEmpty()) {
 
-			// process node
+			// process node and add adjacent nodes v to the queue if not
+			// visited
 			int u = q.poll();
 			for (Edge e : graph.edges(u)) {
 				int v = e.target();
 				if (!visited.contains(v)) {
 					visited.add(v);
 					q.add(v);
-					t.add(e);
+					tree.add(e);
 				}
 			}
 		}
-		return t;
+		return tree;
 	}
 
 	public static List<Integer> dfs(Graphs graph, int root) {
@@ -159,12 +173,12 @@ public class Algorithm {
 		int count = 0;
 
 		// For each node in the graph
+		// count the number of incoming edges
 		for (Integer u : graph.nodes()) {
 			if (!incoming.containsKey(u))
 				incoming.put(u, 0);
 			for (Edge e : graph.edges(u)) {
 				int v = e.target();
-				// incrementDegree(incoming, v);
 				if (!incoming.containsKey(v)) {
 					incoming.put(v, 1);
 				} else {
@@ -172,17 +186,21 @@ public class Algorithm {
 				}
 			}
 		}
+		// Add all of our 0 incoming nodes into our ArrayDeque
 		Queue<Integer> q = new ArrayDeque<Integer>();
 		for (Integer u : graph.nodes()) {
 			if (incoming.get(u)==0)
 				q.add(u);
 		}
+
+		// While there are nodes that need to be processed
+		// add that to our topological order.
 		while (!q.isEmpty()) {
 			int u = q.poll();
 			order.add(u);
 			++count;		
 			for (Edge e : graph.edges(u)) {
-				// decrement
+				// decrement all nodes adjacent to u
 				int v = e.target();
 				incoming.put(v, incoming.get(v)-1);
 				if (incoming.get(v) == 0) {
@@ -205,7 +223,7 @@ public class Algorithm {
 	public static boolean tree(Graphs graph) {
 
 		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
-		/** If the graph has a cycle */
+		/* If the graph has a cycle */
 		if (graph.directed()==false) {
 			if (cyclic(randomNode(graph), (Graph) graph, visited, -1)) {
 				return false;
@@ -227,7 +245,8 @@ public class Algorithm {
 	}
 
 	private static boolean cyclic(Integer u, Graph graph, 
-									HashSet<Integer> visited, int parent) {
+							      HashSet<Integer> visited, 
+							      int parent) {
 		visited.add(u);
 		for (Edge e : graph.edges(u)) {
 			Integer v = e.target();
