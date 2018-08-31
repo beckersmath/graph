@@ -15,20 +15,23 @@ import java.util.List;
 import java.util.Map;
 
 /**
-* The Algorithms API contains many algorithms that are common among graphs.
-* The API allows these algorithms to work on many flavors of graphs and are
-* are optimized to work with specific cases such as weighted graphs.
-* @author Tyler Townsend
-* @version 0.1
-* @since 2018-04-05
-*/
+ * The Algorithms API contains many algorithms that are common among graphs.
+ * The API allows these algorithms to work on many flavors of graphs and are
+ * are optimized to work with specific cases such as weighted graphs.
+ * @author Tyler Townsend
+ * @version 0.1
+ * @since 2018-04-05
+ */
 
 public class Algorithm {
+
+	private Algorithm() {}
 
 	// TODO Make a Tree class that implements Graphs
 	/**
 	 * Performs breadth-first search on graph starting at root. Returns a Set of Edges
 	 * that form the bread-first search tree.
+	 * 
 	 * @param graph Graph data structure
 	 * @param root The starting vertix in graph
 	 * @return The Edges in the bread-first search tree
@@ -65,20 +68,43 @@ public class Algorithm {
 		return tree;
 	}
 
-	public static List<Integer> dfs(Graphs graph, int root) {
-		List<Integer> t = new LinkedList<Integer>();
-		dfs(graph, root, new HashSet<Integer>(graph.size()), t);
-		return t;
+	public static Set<Edge> dfs(Graphs graph, int root) {
+		Set<Edge> tree = new HashSet<Edge>();
+		dfs(graph, root, new HashSet<Integer>(graph.size()), tree);
+		return tree;
 	}
 
-	private static void dfs(Graphs graph, int root, HashSet<Integer> visited, List<Integer> t) {
-		t.add(root);
+	private static Set<Edge> dfs(Graphs graph, int root, 
+							HashSet<Integer> visited, Set<Edge> tree) {
 		visited.add(root);
-		for (Edge e : graph.edges(root)) {
-			dfs(graph, e.target(), visited, t);
+
+		ArrayDeque<Integer> recStack = new ArrayDeque<Integer>();
+		while(!recStack.isEmpty()) {
+
+			int currNode = recStack.pop();
+
+			// Add all the neighbors of currentNode to stack if they have
+			// not been visited yet.
+			for (Edge e : graph.edges(currNode)) {
+				int nextNode = e.target();
+				if (!visited.contains(nextNode)) {
+					visited.add(nextNode);
+					recStack.add(nextNode);
+					tree.add(e);
+				}
+			}
 		}
+
+		return tree;
 	}
 
+	/**
+	 * Tests whether graph is bipartite or that the set of nodes may be partitioned
+	 * into two sets such that no adjacent nodes are in the same set.
+	 * 
+	 * @param graph The graph to be testsed
+	 * @return A boolean where if true the graph is bipartite.
+	 */
 	public static boolean bipartite(Graphs graph) {
 
 		HashSet<Integer> red = new HashSet<Integer>();
@@ -109,35 +135,58 @@ public class Algorithm {
 		return true;
 	}
 
-	/*
-	* Idea: return set of connected components as graphs
-	*
-	*/
+	/**
+	 * Returns the number of connected components in graph. 
+	 * 
+	 * @param graph The graph
+	 * @return The number of connected components in the graph.
+	 */
 	public static int numberOfComponets (Graphs graph) {
-		ArrayList<List<Integer>> comp = new ArrayList<List<Integer>>();
+		List<Set<Edge>> comp = new ArrayList<Set<Edge>>();
 		comp = connectedComponents(graph);
 		return comp.size();
 	}
 
-	public static ArrayList<List<Integer>> connectedComponents(Graphs graph) {
-		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
-		ArrayList<List<Integer>> cc = new ArrayList<List<Integer>>();
+	/**
+	 * Returns a list of the connected component in graph. Each connected
+	 * component is represented by a set of Edges.
+	 * 
+	 * @param graph The graph.
+	 * @return A list of connected components.
+	 */
+	public static List<Set<Edge>> connectedComponents(Graphs graph) {
 
-		List<Integer> component = new LinkedList<>();
+		// Maintain a set of visited nodes
+		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
+
+		// Store the connected components
+		List<Set<Edge>> cc = new ArrayList<Set<Edge>>();
+
+		// Perform a depth first search on the network
+		// to find all components.
+		Set<Edge> component = new HashSet<>();
 		for (Integer u : graph.nodes()) {
 			if (!visited.contains(u)) {
-				dfs (graph, u, visited, component);
-				cc.add(component);
+				cc.add(dfs (graph, u, visited, component));
 			}
 		}
 		return cc;
 	}
 
+	/**
+	 * Determins if the graph is strongly connected. That is for node s and t, if
+	 * there is a path from s to t, then there is a path from t to s.
+	 * 
+	 * @param graph The graph.
+	 * @return A boolean stating wheteher the graph is strongly connected. If strongly
+	 * 		   connected, then returns True.
+	 */
 	public static boolean stronglyConnected(Graphs graph) {
 		boolean connected = (numberOfComponets(graph)==1);
 		if (!connected) {
 			return false;
 		}
+		// every undirected graph is strongly connected
 		if (!graph.directed()) {
 			return true;
 		}
@@ -145,11 +194,14 @@ public class Algorithm {
 	}
 
 	private static boolean stronglyConnected(Graphs graph, int u) {
+		// Reverse the graph
 		Graphs graphRev = reverseGraph(graph);
 		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
 		HashSet<Integer> visitedRev = new HashSet<Integer>(graph.size());
 		bfs(graph, u, visited);
 		bfs(graphRev, u, visitedRev);
+		// If the graph and the reversed graph reach all nodes, then
+		// the graph is strongly connected.
 		if (visited == null || visitedRev == null) return false;
 		else if (visited.size() != visitedRev.size()) return false;
 		else return visited.containsAll(visitedRev);
@@ -158,6 +210,7 @@ public class Algorithm {
 	/**
 	 * Returns a topological ordering on graph. Returned as a list of 
 	 * the Node numbers.
+	 * 
 	 * @param graph A DirectedGraph 
 	 * @return An ordered list of Nodes.
 	 */
@@ -214,42 +267,58 @@ public class Algorithm {
 		return order;
 	}
 
+	/**
+	 * Determines if the graph is a directed acyclic graph.
+	 *
+	 * @param graph The graph.
+	 * @return True if the graph is directed and acylic otherwise false.
+	 */
 	public static boolean dag(Graphs graph) {
 		if (graph.directed() == false) return false;
-		return (topologicalSort((DirectedGraph) graph)==null) ? false : true;
+		return 
+			(topologicalSort((DirectedGraph) graph).size() == 0) ? false : true;
 	}
 
-	/* check if un-directed graph is acyclic and connected */
+	/**
+	 * Determines if the graph is a tree. For it to be a tree, the graph must
+	 * be acyclic and connected.
+	 * 
+	 * @param graph  The graph.
+	 * @return Returns true if the graph is acyclic and connected.
+	 */
 	public static boolean tree(Graphs graph) {
 
 		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
 		/* If the graph has a cycle */
 		if (graph.directed()==false) {
-			if (cyclic(randomNode(graph), (Graph) graph, visited, -1)) {
+			if (cyclic(randomNode(graph), (Graph) graph, visited, -1))
 				return false;
-			}
 		} else {
-			if (cyclic((DirectedGraph) graph)) {
+			if (isTree((DirectedGraph) graph))
 				return false;
-			}	
 		}
 
-		/** If the graph is disconnected */
+		/* If the graph is disconnected */
 		for (Integer u : graph.nodes()) {
 			if (!visited.contains(u)) {
-				System.out.println("disconnected");
 				return false;
 			}
 		}
 		return true;
 	}
 
+	/* 
+	   Performs DFS on starting at node u. Continuosly check if we have
+	   visited a node before. If it is not the parent of the u and we have
+	   visited the node before, then the graph contains a cycle. 
+	 */
 	private static boolean cyclic(Integer u, Graph graph, 
-							      HashSet<Integer> visited, 
-							      int parent) {
+							      HashSet<Integer> visited, int parent) {
+		// visited node u
 		visited.add(u);
 		for (Edge e : graph.edges(u)) {
 			Integer v = e.target();
+			// 
 			if (!visited.contains(v)) {
 				if (cyclic(v, graph, visited, u))
 					return true;
@@ -260,35 +329,37 @@ public class Algorithm {
 		return false;
 	}
 
-	public static boolean cyclic(DirectedGraph graph) {
-		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
-		HashSet<Integer> recStack = new HashSet<Integer>(graph.size());
-		for (Integer u : graph.nodes()) {
-			if (cyclic(graph, randomNode(graph), visited, recStack))
-				return true;
-		}
-		return false;
+	private static boolean isTree(DirectedGraph graph) {
+		
+		HashSet<Integer> visited = new HashSet<>(graph.size());
+		return isTree(graph, visited, randomNode(graph));
 	}
 
-	private static boolean cyclic (DirectedGraph graph, int u, 
-					HashSet<Integer> visited, HashSet<Integer> recStack) {
-		if (!visited.contains(u)) {
-			visited.add(u);
-			recStack.add(u);
-			for (Edge e : graph.edges(u)) {
-				int v = e.target();
-				if (!visited.contains(v) && cyclic(graph, v, visited, recStack))
-					return true;
-				else if (recStack.contains(v))
-					return true;
-			}
+	private static boolean isTree(DirectedGraph graph, 
+								  HashSet<Integer> visited, 
+								  Integer currentNode) {
+
+		// mark the node visited
+		visited.add(currentNode);
+
+		// for each adjacent node
+		for (Edge e : graph.edges(currentNode)) {
+			if (visited.contains(currentNode)) return false;
+			// Get the destination node of the edge
+			Integer nextNode = e.target();
+			isTree(graph, visited, nextNode);
 		}
-		recStack.remove(u);
-		return false;
+
+		return true;
+
 	}
 
-	// Implement functions to check if graph is weighted and directed
-	// Can implement reverse edge method in in
+	/**
+	 * Reverse graph out-of-place and returns the new graph with each edge reversed
+	 * .
+	 * @param  graph The graph to be reversed
+	 * @return       A new graph that is original graph with every edge reversed.
+	 */
 	public static Graphs reverseGraph(Graphs graph) {
 		Graphs reversed = Algorithm.graphType(graph);
 		for (Integer u : graph.nodes()) {
@@ -300,6 +371,16 @@ public class Algorithm {
 		return reversed;
 	}
 
+
+	/**
+	 * Returns a boolean indicating whether there is an s-t path in 
+	 * graph
+	 * .
+	 * @param  graph The graph for which an s-t path is being determined.
+	 * @param  s     The starting node
+	 * @param  t     The terminal node
+	 * @return       Returns true if there is a path, otherwise false;
+	 */
 	public static boolean containsPath(Graphs graph, int s, int t) {
 
 		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
@@ -320,13 +401,25 @@ public class Algorithm {
 		return false;
 	}
 
-	public static Path getPath(Graphs graph, int s, int t) {
-		if (!containsPath(graph, s, t)) return null;
-		if (graph.weighted()==true) return getWeightedPath(graph, s, t);
-		return getPathUnweighted(graph, s, t);
+	/**
+	 * Constructs the shortest path from the startNode to the terminalNode in graph
+	 * 
+	 * @param graph The graph
+	 * @param startNode The node which will start this Path
+	 * @param terminalNode The node which will end this Path
+	 * @return The Path from startNode to terminalNode
+	 */
+	public static Path getPath(Graphs graph, int startNode, int terminalNode) {
+		if (!containsPath(graph, startNode, terminalNode)) return null;
+		if (graph.weighted()==true) 
+			return getWeightedPath(graph, startNode, terminalNode);
+		return getUnweightedPath(graph, startNode, terminalNode);
 	}	
 
-	private static Path getPathUnweighted(Graphs graph, int s, int t) {
+	/*
+	   Performs BFS which returns the shortest path from s to t
+	 */
+	private static Path getUnweightedPath(Graphs graph, int s, int t) {
 		Path path = Path.makePath(s);
 		HashSet<Integer> visited = new HashSet<Integer>(graph.size());
 		HashMap<Integer, Edge> parent = new HashMap<Integer, Edge>(graph.size());
@@ -382,6 +475,9 @@ public class Algorithm {
 		return constructPath(path, parent, s, t);
 	}
 
+	/*
+	  Constructs the path by tracing back from each node to its parent then reverses the order
+	 */
 	private static Path constructPath(Path path, HashMap<Integer, Edge> parent, int s, int t) {
 		int curr = t;
 		while (!parent.get(curr).source().equals(s)) {
@@ -393,6 +489,15 @@ public class Algorithm {
 		return path;
 	}
 
+	/**
+	 * Returns a map of the distance to each reachable node in graph from node source. 
+	 * Unreachable nodes have a distance of 1 billion. This algorithm implements Dijkstras
+	 * method of all shortest paths.
+	 * 
+	 * @param graph The graph.
+	 * @param source The starting node for all paths.
+	 * @return The distance to each node.
+	 */
 	private static Map<Integer, Double> getDistances(Graphs graph, int source) {
 
 		HashMap<Integer, Double> dist = new HashMap<Integer, Double>(graph.size());
@@ -431,6 +536,13 @@ public class Algorithm {
 		}
 	}
 
+	/**
+	 * Implements Prims algorithm for finding the minimum spanning tree. 
+	 * 
+	 * @param graph The graph for which an mst will be found
+	 * @return A set of edges contained in the minimum spanning tree. If there 
+	 *         is not minimum spanning tree, mst will return an empty set.
+	 */
 	public static Set<Edge> mst(Graphs graph) {
 
 		// First check if graph is connnected
@@ -486,11 +598,13 @@ public class Algorithm {
 		return graph.directed() ? DirectedGraph.makeGraph() : Graph.makeGraph();
 	}
 
-	/** Returns a random node from the graph in O(1) time */
+	/* Returns a random node from the graph in O(1) time */
 	private static Integer randomNode(Graphs graph) {
 		return graph.nodes().iterator().next();
 	}
 
+	/* Helper function for testing now actual part of the API */
+	// TODO move these to a utility class for testing.
 	public static void printGraph(Graphs graph) {
 
 		if (graph == null) {
