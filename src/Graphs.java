@@ -4,13 +4,13 @@ import java.util.LinkedList;
 
 // TODO refactor all methods to use insert, remove, contains
 /**
-* The Graphs interface denots all the public methods that can be used within
-* the library. The library contians implementations of weighted/unwieghted 
-* directed or undirected graphs.
-* @author Tyler Townsend
-* @version 0.1
-* @since 2018-04-05
-*/
+ * The Graphs interface denots all the public methods that can be used within
+ * the library. The library contians implementations of weighted/unwieghted 
+ * directed or undirected graphs.
+ * @author Tyler Townsend
+ * @version 0.1
+ * @since 2018-04-05
+ */
 
 interface Graphs {
 	public Boolean directed();
